@@ -1,91 +1,70 @@
-import json
+import pytest
 from utils.dbstore import DBStore
-from pydantic import BaseModel
-from typing import List
+
+# Example connection string for local MongoDB server
+connection_string = "mongodb://localhost:27017/"
 
 
-
-class ProductModel(BaseModel):
-    """
-    Reuse the ProductModel from product_model.py.
-    """
-    name: str
-    price: float
-    discount: int
-    category: str
+@pytest.fixture
+def db_store():
+    return DBStore(connection_string)
 
 
-class ProductService:
-    def __init__(self, config_path='C:/Users/bucketb0t/Desk top/Python Cata/schema_project/config.json'):
-        with open(config_path, 'r') as config_file:
-            config_data = json.load(config_file)
+# Parametrized tests for the DBStore class in dbstore.py
 
-        # Extract data_dir and port from the configuration
-        data_dir = config_data.get('data_dir')
-        port = config_data.get('port')
+# Test initialization of the database with a test document
+@pytest.mark.parametrize("db_name, collection_name",
+                         [("test_db", "test_collection"), ("test_db", "test_collection_edge1"),
+                          ("test_db_edge2", "test_collection")])
+def test_initialize_database(db_store, db_name, collection_name):
+    result = db_store.initialize_database(db_name, collection_name)
+    assert result is not None
 
-        # Construct the MongoDB connection string
-        connection_string = f"mongodb://localhost:{port}/"
-        self.db_store = DBStore(connection_string)
 
-        # Set fixed database and collection names
-        self.db_name = "schema_project"
-        self.collection_name = "schema_project_collection"
+# Test adding a document to the database
+@pytest.mark.parametrize("db_name, collection_name, payload", [
+    ("test_db", "test_collection", {"name": "TestProduct", "price": 19.99, "discount": 5, "category": "TestCategory"}),
+    ("test_db", "test_collection_edge1",
+     {"name": "TestProduct", "price": 19.99, "discount": 5, "category": "TestCategory"}), (
+    "test_db_edge2", "test_collection",
+    {"name": "TestProduct", "price": 19.99, "discount": 5, "category": "TestCategory"})])
+def test_add_document(db_store, db_name, collection_name, payload):
+    result = db_store.add_document(db_name, collection_name, payload)
+    assert "oid" in result
 
-    def add_product(self, product_data: ProductModel):
-        """
-        Add a product using the DBStore add_document method.
-        :param product_data: Product data to be added
-        :return: Dictionary containing the ObjectId of the added document
-        """
-        payload = product_data.dict()
-        result = self.db_store.add_document(self.db_name, self.collection_name, payload)
-        return result
 
-    def get_product(self, product_data: ProductModel):
-        """
-        Get a product using the DBStore find_document_by_key method.
-        :param product_data: Product data to be used for finding the document
-        :return: The found document or None if not found
-        """
-        key = "name"
-        result = self.db_store.find_document_by_key(self.db_name, self.collection_name, key)
-        return result
+# Test finding a document by key in the database
+@pytest.mark.parametrize("db_name, collection_name, key",
+                         [("test_db", "test_collection", "name"), ("test_db", "test_collection_edge1", "name"),
+                          ("test_db_edge2", "test_collection", "name")])
+def test_find_document_by_key(db_store, db_name, collection_name, key):
+    result = db_store.find_document_by_key(db_name, collection_name, key)
+    assert result is not None
 
-    def update_product(self, product_data: ProductModel):
-        """
-        Update a product using the DBStore update_document_by_name method.
-        :param product_data: Product data for updating the document
-        :return: Dictionary containing a message about the update status
-        """
-        name = product_data.name
-        payload = product_data.dict()
-        result = self.db_store.update_document_by_name(self.db_name, self.collection_name, name, payload)
-        return result
 
-    def delete_product(self, product_data: ProductModel):
-        """
-        Delete a product using the DBStore delete_document_by_name method.
-        :param product_data: Product data for deleting the document
-        :return: Dictionary containing a message about the delete status
-        """
-        name = product_data.name
-        result = self.db_store.delete_document_by_name(self.db_name, self.collection_name, name)
-        return result
+# Test finding documents by key in the database
+@pytest.mark.parametrize("db_name, collection_name, key",
+                         [("test_db", "test_collection", "name"), ("test_db", "test_collection_edge1", "name"),
+                          ("test_db_edge2", "test_collection", "name")])
+def test_find_documents_by_key(db_store, db_name, collection_name, key):
+    result = db_store.find_documents_by_key(db_name, collection_name, key)
+    assert isinstance(result, list)
 
-    def get_products(self, products_data: List[ProductModel]) -> List[dict]:
-        """
-        Get a list of products using the DBStore find_documents_by_key method.
-        :param products_data: List of product data to be used for finding the documents
-        :return: List of found documents or an empty list if none found
-        """
-        key = "name"
-        result = self.db_store.find_documents_by_key(self.db_name, self.collection_name, key)
-        return result
 
-# Example usage:
-# product_service = ProductService()
-# product_data = ProductModel(name="TestProduct", price=19.99, discount=5, category="TestCategory")
-# result = product_service.add_product(product_data)
-# print(result)
-# (Similarly, you can use other methods like get_product, update_product, delete_product, get_products)
+# Test updating a document by name in the database
+@pytest.mark.parametrize("db_name, collection_name, name, payload",
+                         [("test_db", "test_collection", "TestProduct", {"price": 29.99}),
+                          ("test_db", "test_collection_edge1", "TestProduct", {"price": 29.99}),
+                          ("test_db_edge2", "test_collection", "TestProduct", {"price": 29.99})])
+def test_update_document_by_name(db_store, db_name, collection_name, name, payload):
+    result = db_store.update_document_by_name(db_name, collection_name, name, payload)
+    assert "message" in result
+
+
+# Test deleting a document by name in the database
+@pytest.mark.parametrize("db_name, collection_name, name", [("test_db", "test_collection", "TestProduct"),
+                                                            ("test_db", "test_collection_edge1", "TestProduct"),
+                                                            ("test_db_edge2", "test_collection", "TestProduct")])
+def test_delete_document_by_name(db_store, db_name, collection_name, name):
+    result = db_store.delete_document_by_name(db_name, collection_name, name)
+    assert "message" in result

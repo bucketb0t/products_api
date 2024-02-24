@@ -1,22 +1,19 @@
+import os
 import json
-from utils.dbstore import DBStore
-from pydantic import BaseModel
 from typing import List
 
-
-
-class ProductModel(BaseModel):
-    """
-    Reuse the ProductModel from product_model.py.
-    """
-    name: str
-    price: float
-    discount: int
-    category: str
-
+from utils.dbstore import DBStore
+from model.product_model import ProductModel
 
 class ProductService:
-    def __init__(self, config_path='D:/Seby_Python/python_projects/products_api/config.json'):
+    def __init__(self, config_path=None):
+
+        if config_path is None:
+            # Get the directory path of the current module
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            # Navigate to the parent directory and then to the config file
+            config_path = os.path.join(current_dir, '..', 'config.json')
+
         with open(config_path, 'r') as config_file:
             config_data = json.load(config_file)
 
