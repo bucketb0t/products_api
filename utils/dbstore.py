@@ -44,9 +44,10 @@ class DBStore:
         db = self.client[db_name]
         collection = db[collection_name]
         result = collection.insert_one(payload)
+        print(f"Document added oid {str(result.inserted_id)}")
         return {"oid": str(result.inserted_id)}
 
-    def find_document_by_key(self, db_name, collection_name, key):
+    def find_document_by_key(self, db_name, collection_name, key, value):
         """
         Find a document in the specified MongoDB database and collection by a key.
         :param db_name: Name of the MongoDB database
@@ -56,10 +57,11 @@ class DBStore:
         """
         db = self.client[db_name]
         collection = db[collection_name]
-        document = collection.find_one({key: {"$exists": True}})
+        document = collection.find_one({key: value})
+        print(f"Document found! {document}")
         return document
 
-    def find_documents_by_key(self, db_name, collection_name, key):
+    def find_documents_by_key(self, db_name, collection_name, key, value):
         """
         Find documents in the specified MongoDB database and collection by a key.
         :param db_name: Name of the MongoDB database
@@ -69,7 +71,11 @@ class DBStore:
         """
         db = self.client[db_name]
         collection = db[collection_name]
-        documents = list(collection.find({key: {"$exists": True}}))
+        if key is None or value is None:
+            documents = list(collection.find())  # echivalentul al get all products
+        else:
+            documents = list(collection.find({key: value})) # echivalentul pe get all product cu numele xulescu
+        print(f"Documents found: {documents}")
         return documents
 
     def update_document_by_name(self, db_name, collection_name, name, payload):
@@ -83,11 +89,15 @@ class DBStore:
         """
         db = self.client[db_name]
         collection = db[collection_name]
-        result = collection.update_one({name: {"$exists": True}}, {"$set": payload})
-        if result.modified_count > 0:
-            return {"message": "Document updated successfully"}
+        result = collection.update_one({"name": name}, {"$set": payload})
+
+        if result.modified_count == 1:
+            updated_document = collection.find_one(payload)
+            print(f"Document updated! {payload}")
+            return updated_document
         else:
-            return {"message": "Document not found"}
+            print(f"Document failed to update! {payload}")
+            return None
 
     def delete_document_by_name(self, db_name, collection_name, name):
         """
@@ -99,8 +109,10 @@ class DBStore:
         """
         db = self.client[db_name]
         collection = db[collection_name]
-        result = collection.delete_one({name: {"$exists": True}})
+        result = collection.delete_one({"name": name})
         if result.deleted_count > 0:
-            return {"message": "Document deleted successfully"}
+            print(f"Document deleted! {name}")
+            return True
         else:
-            return {"message": "Document not found"}
+            print(f"Document failed to be deleted! {name}")
+            return False

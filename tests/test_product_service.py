@@ -1,12 +1,12 @@
 import pytest
-
 from model.product_model import ProductModel
 from services.product_services import ProductService
 
 # Example connection string for local MongoDB server
 connection_string = "mongodb://localhost:27017/"
 
-
+# TESTE DE ACTUALIZAT SI FACUT SA RULEZE INDEPENDENT UNU DE ALTU
+# UNIT TEST != UNITTEST LIBRARY
 @pytest.fixture
 def product_service():
     return ProductService()
@@ -32,7 +32,7 @@ def test_add_product(product_service, product_data):
                           ProductModel(name="TestProductEdge1", price=19.99, discount=5, category="TestCategory"),
                           ProductModel(name="TestProductEdge2", price=19.99, discount=5, category="TestCategory")])
 def test_get_product(product_service, product_data):
-    result = product_service.get_product(product_data)
+    result = product_service.get_product_by_name(product_data)
     assert result is not None
 
 
@@ -53,7 +53,7 @@ def test_update_product(product_service, product_data):
                           [ProductModel(name="TestProductEdge1", price=19.99, discount=5, category="TestCategory")],
                           [ProductModel(name="TestProductEdge2", price=19.99, discount=5, category="TestCategory")]])
 def test_get_products(product_service, products_data):
-    result = product_service.get_products(products_data)
+    result = product_service.get_all_products(products_data)
     assert isinstance(result, list)
 
 # Test deleting a product using the ProductService class

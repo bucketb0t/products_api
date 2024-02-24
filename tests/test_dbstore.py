@@ -4,7 +4,7 @@ from utils.dbstore import DBStore
 # Example connection string for local MongoDB server
 connection_string = "mongodb://localhost:27017/"
 
-
+# TESTE DE ACTUALIZAT SI FACUT SA RULEZE INDEPENDENT UNU DE ALTU
 @pytest.fixture
 def db_store():
     return DBStore(connection_string)
