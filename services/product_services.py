@@ -79,10 +79,3 @@ class ProductService:
         return result
 
 
-
-# Example usage:
-# product_service = ProductService()
-# product_data = ProductModel(name="TestProduct", price=19.99, discount=5, category="TestCategory")
-# result = product_service.add_product(product_data)
-# print(result)
-# (Similarly, you can use other methods like get_product, update_product, delete_product, get_products)

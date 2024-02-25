@@ -61,7 +61,7 @@ class DBStore:
         print(f"Document found! {document}")
         return document
 
-    def find_documents_by_key(self, db_name, collection_name, key, value):
+    def find_documents_by_key(self, db_name, collection_name, key=None, value=None):
         """
         Find documents in the specified MongoDB database and collection by a key.
         :param db_name: Name of the MongoDB database
@@ -89,6 +89,7 @@ class DBStore:
         """
         db = self.client[db_name]
         collection = db[collection_name]
+        print(f"Querry: {name} // {payload}")
         result = collection.update_one({"name": name}, {"$set": payload})
 
         if result.modified_count == 1:
@@ -110,6 +111,7 @@ class DBStore:
         db = self.client[db_name]
         collection = db[collection_name]
         result = collection.delete_one({"name": name})
+        print(f"name:{name} /// result: {result}")
         if result.deleted_count > 0:
             print(f"Document deleted! {name}")
             return True
