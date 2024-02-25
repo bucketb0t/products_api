@@ -26,8 +26,8 @@ class ProductService:
         self.db_store = DBStore(connection_string)
 
         # Set fixed database and collection names
-        self.db_name = "schema_project"
-        self.collection_name = "schema_project_collection"
+        self.db_name = "products"
+        self.collection_name = "products"
 
     def add_product(self, product_data: ProductModel):
         """
