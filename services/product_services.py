@@ -28,7 +28,7 @@ class ProductService:
         # Set fixed database and collection names
         self.db_name = "products"
         self.collection_name = "products"
-
+        # find waldo
     def add_product(self, product_data: ProductModel):
         """
         Add a product using the DBStore add_document method.
