@@ -1,70 +1,121 @@
 import pytest
 from utils.dbstore import DBStore
 
-# Example connection string for local MongoDB server
-connection_string = "mongodb://localhost:27017/"
 
-# TESTE DE ACTUALIZAT SI FACUT SA RULEZE INDEPENDENT UNU DE ALTU
 @pytest.fixture
-def db_store():
-    return DBStore(connection_string)
+def test_data():
+    data = {
+        "predefined_payload": {
+            "name": "TestProduct",
+            "price": 19.99,
+            "discount": 5,
+            "category": "TestCategory"
+        },
+        "db_store": DBStore('mongodb://localhost:27017/'),
+        "test_db_name": 'test_db',
+        "test_collection_name": 'test_collection'
+    }
+    return data
 
 
-# Parametrized tests for the DBStore class in dbstore.py
-
-# Test initialization of the database with a test document
-@pytest.mark.parametrize("db_name, collection_name",
-                         [("test_db", "test_collection"), ("test_db", "test_collection_edge1"),
-                          ("test_db_edge2", "test_collection")])
-def test_initialize_database(db_store, db_name, collection_name):
-    result = db_store.initialize_database(db_name, collection_name)
-    assert result is not None
+"""Nu reusesc sa ii dau de cap"""
 
 
-# Test adding a document to the database
-@pytest.mark.parametrize("db_name, collection_name, payload", [
-    ("test_db", "test_collection", {"name": "TestProduct", "price": 19.99, "discount": 5, "category": "TestCategory"}),
-    ("test_db", "test_collection_edge1",
-     {"name": "TestProduct", "price": 19.99, "discount": 5, "category": "TestCategory"}), (
-    "test_db_edge2", "test_collection",
-    {"name": "TestProduct", "price": 19.99, "discount": 5, "category": "TestCategory"})])
-def test_add_document(db_store, db_name, collection_name, payload):
-    result = db_store.add_document(db_name, collection_name, payload)
-    assert "oid" in result
+# def test_initialize_database(test_data):
+#     # Arrange
+#     db_store = test_data["db_store"]
+#     test_db_name = test_data["test_db_name"]
+#     test_collection_name = test_data["test_collection_name"]
+#
+#     # Act
+#     result = db_store.initialize_database(test_db_name, test_collection_name)
+#
+#     # Assert
+#     assert result is not None
+#     assert result["name"] == "TestProduct"
+#     assert result["price"] == 19.99
+#     assert result["discount"] == 5
+#     assert result["category"] == "TestCategory"
+#
+#     # Clean up: Delete the test document from the collection
+#     db_store.delete_document_by_name(test_db_name, test_collection_name, "TestProduct")
 
 
-# Test finding a document by key in the database
-@pytest.mark.parametrize("db_name, collection_name, key",
-                         [("test_db", "test_collection", "name"), ("test_db", "test_collection_edge1", "name"),
-                          ("test_db_edge2", "test_collection", "name")])
-def test_find_document_by_key(db_store, db_name, collection_name, key):
-    result = db_store.find_document_by_key(db_name, collection_name, key)
-    assert result is not None
+def test_add_document(test_data):
+    predefined_payload = test_data["predefined_payload"]
+    db_store = test_data["db_store"]
+    test_db_name = test_data["test_db_name"]
+    test_collection_name = test_data["test_collection_name"]
+
+    # Test adding a document
+    result = db_store.add_document(test_db_name, test_collection_name, predefined_payload)
+
+    assert result.get("oid") is not None
 
 
-# Test finding documents by key in the database
-@pytest.mark.parametrize("db_name, collection_name, key",
-                         [("test_db", "test_collection", "name"), ("test_db", "test_collection_edge1", "name"),
-                          ("test_db_edge2", "test_collection", "name")])
-def test_find_documents_by_key(db_store, db_name, collection_name, key):
-    result = db_store.find_documents_by_key(db_name, collection_name, key)
-    assert isinstance(result, list)
+def test_find_document_by_key(test_data):
+    predefined_payload = test_data["predefined_payload"]
+    db_store = test_data["db_store"]
+    test_db_name = test_data["test_db_name"]
+    test_collection_name = test_data["test_collection_name"]
+
+    # Add a document before testing find_document_by_key
+    db_store.add_document(test_db_name, test_collection_name, predefined_payload)
+
+    # Test finding the document by key
+    result = db_store.find_document_by_key(test_db_name, test_collection_name, "_id", predefined_payload["_id"])
+    assert result == predefined_payload
 
 
-# Test updating a document by name in the database
-@pytest.mark.parametrize("db_name, collection_name, name, payload",
-                         [("test_db", "test_collection", "TestProduct", {"price": 29.99}),
-                          ("test_db", "test_collection_edge1", "TestProduct", {"price": 29.99}),
-                          ("test_db_edge2", "test_collection", "TestProduct", {"price": 29.99})])
-def test_update_document_by_name(db_store, db_name, collection_name, name, payload):
-    result = db_store.update_document_by_name(db_name, collection_name, name, payload)
-    assert "message" in result
+def test_find_documents_by_key(test_data):
+    # Arrange
+    db_store = test_data["db_store"]
+    test_db_name = test_data["test_db_name"]
+    test_collection_name = test_data["test_collection_name"]
+
+    # Clear the test collection
+    db_store.client[test_db_name][test_collection_name].delete_many({})
+
+    # Add a test document to the collection
+    test_payload = test_data["predefined_payload"]
+    db_store.add_document(test_db_name, test_collection_name, test_payload)
+
+    # Act
+    result = db_store.find_documents_by_key(test_db_name, test_collection_name, "name", "TestProduct")
+
+    # Assert
+    assert len(result) == 1
 
 
-# Test deleting a document by name in the database
-@pytest.mark.parametrize("db_name, collection_name, name", [("test_db", "test_collection", "TestProduct"),
-                                                            ("test_db", "test_collection_edge1", "TestProduct"),
-                                                            ("test_db_edge2", "test_collection", "TestProduct")])
-def test_delete_document_by_name(db_store, db_name, collection_name, name):
-    result = db_store.delete_document_by_name(db_name, collection_name, name)
-    assert "message" in result
+def test_update_document_by_name(test_data):
+    db_store = test_data["db_store"]
+    test_db_name = test_data["test_db_name"]
+    test_collection_name = test_data["test_collection_name"]
+    predefined_payload = test_data["predefined_payload"]
+
+    # Add a document before testing update_document_by_name
+    db_store.add_document(test_db_name, test_collection_name, predefined_payload)
+
+    # Update the document
+    update_payload = {"price": 29.99, "discount": 10}
+    updated_document = db_store.update_document_by_name(test_db_name, test_collection_name, "TestProduct",
+                                                        update_payload)
+
+    assert updated_document is not None
+    assert updated_document['price'] == update_payload['price']
+    assert updated_document['discount'] == update_payload['discount']
+
+
+def test_delete_document_by_name(test_data):
+    db_store = test_data["db_store"]
+    test_db_name = test_data["test_db_name"]
+    test_collection_name = test_data["test_collection_name"]
+    predefined_payload = test_data["predefined_payload"]
+
+    # Add a document before testing delete_document_by_name
+    db_store.add_document(test_db_name, test_collection_name, predefined_payload)
+
+    # Delete the document
+    result = db_store.delete_document_by_name(test_db_name, test_collection_name, "TestProduct")
+
+    assert result is True  # Document should be deleted

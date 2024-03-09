@@ -25,7 +25,8 @@ async def read_product(name: str):
 async def read_products():
     return product_service.get_all_products()
 
-@router.put("/{name}",response_model=ProductModel)
+
+@router.put("/{name}", response_model=ProductModel)
 async def update_product(name: str, product_data: ProductModel):
     payload = {
         "reference_name": name,
@@ -38,6 +39,6 @@ async def update_product(name: str, product_data: ProductModel):
     return product_service.update_product(payload)
 
 
-@router.delete("/{name}",response_model=bool)
-async def delete_product(name:str):
+@router.delete("/{name}", response_model=bool)
+async def delete_product(name: str):
     return product_service.delete_product(name)

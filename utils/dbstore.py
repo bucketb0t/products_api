@@ -53,6 +53,7 @@ class DBStore:
         :param db_name: Name of the MongoDB database
         :param collection_name: Name of the MongoDB collection
         :param key: Key to search for in the document
+        :param value: Value corresponding to the key
         :return: The found document or None if not found
         """
         db = self.client[db_name]
@@ -74,7 +75,7 @@ class DBStore:
         if key is None or value is None:
             documents = list(collection.find())  # echivalentul al get all products
         else:
-            documents = list(collection.find({key: value})) # echivalentul pe get all product cu numele xulescu
+            documents = list(collection.find({key: value}))  # echivalentul pe get all product cu numele xulescu
         print(f"Documents found: {documents}")
         return documents
 

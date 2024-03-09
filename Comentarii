@@ -1,0 +1,5 @@
+Am probleme la testul de initializare din dbstore, intr-un intr-un
+cliclu legat de variabila value din functia de find si testul delete din
+test_product_services unde din cauza faptului ca se sterge dupa nume,
+daca apar mai multe nume obtin eroare. Am evitat sa modific functiile
+principale, desi am incercat, le-am restaurat la forma initiala.
