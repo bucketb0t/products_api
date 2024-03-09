@@ -3,7 +3,8 @@ from utils.dbstore import DBStore
 
 
 @pytest.fixture
-def test_data():
+def data_payload():
+
     data = {
         "predefined_payload": {
             "name": "TestProduct",
@@ -21,31 +22,34 @@ def test_data():
 """Nu reusesc sa ii dau de cap"""
 
 
-# def test_initialize_database(test_data):
-#     # Arrange
-#     db_store = test_data["db_store"]
-#     test_db_name = test_data["test_db_name"]
-#     test_collection_name = test_data["test_collection_name"]
-#
-#     # Act
-#     result = db_store.initialize_database(test_db_name, test_collection_name)
-#
-#     # Assert
-#     assert result is not None
-#     assert result["name"] == "TestProduct"
-#     assert result["price"] == 19.99
-#     assert result["discount"] == 5
-#     assert result["category"] == "TestCategory"
-#
-#     # Clean up: Delete the test document from the collection
-#     db_store.delete_document_by_name(test_db_name, test_collection_name, "TestProduct")
+def test_initialize_database(data_payload):
+
+    # Arrange
+    db_store = data_payload["db_store"]
+    test_db_name = data_payload["test_db_name"]
+    test_collection_name = data_payload["test_collection_name"]
+
+    # Act
+    result = db_store.initialize_database(test_db_name, test_collection_name)
+
+    # Assert
+    assert result is not None
+    assert result["name"] == "TestProduct"
+    assert result["price"] == 19.99
+    assert result["discount"] == 5
+    assert result["category"] == "TestCategory"
 
 
-def test_add_document(test_data):
-    predefined_payload = test_data["predefined_payload"]
-    db_store = test_data["db_store"]
-    test_db_name = test_data["test_db_name"]
-    test_collection_name = test_data["test_collection_name"]
+
+
+def test_add_document(data_payload):
+    predefined_payload = data_payload["predefined_payload"]
+    db_store = data_payload["db_store"]
+    test_db_name = data_payload["test_db_name"]
+    test_collection_name = data_payload["test_collection_name"]
+
+    # Clear the test collection
+    db_store.client[test_db_name][test_collection_name].delete_many({})
 
     # Test adding a document
     result = db_store.add_document(test_db_name, test_collection_name, predefined_payload)
@@ -53,11 +57,14 @@ def test_add_document(test_data):
     assert result.get("oid") is not None
 
 
-def test_find_document_by_key(test_data):
-    predefined_payload = test_data["predefined_payload"]
-    db_store = test_data["db_store"]
-    test_db_name = test_data["test_db_name"]
-    test_collection_name = test_data["test_collection_name"]
+def test_find_document_by_key(data_payload):
+    predefined_payload = data_payload["predefined_payload"]
+    db_store = data_payload["db_store"]
+    test_db_name = data_payload["test_db_name"]
+    test_collection_name = data_payload["test_collection_name"]
+
+    # Clear the test collection
+    db_store.client[test_db_name][test_collection_name].delete_many({})
 
     # Add a document before testing find_document_by_key
     db_store.add_document(test_db_name, test_collection_name, predefined_payload)
@@ -67,31 +74,36 @@ def test_find_document_by_key(test_data):
     assert result == predefined_payload
 
 
-def test_find_documents_by_key(test_data):
+def test_find_documents_by_key(data_payload):
     # Arrange
-    db_store = test_data["db_store"]
-    test_db_name = test_data["test_db_name"]
-    test_collection_name = test_data["test_collection_name"]
+    db_store = data_payload["db_store"]
+    test_db_name = data_payload["test_db_name"]
+    test_collection_name = data_payload["test_collection_name"]
+
+    # Add a test document to the collection
+    test_payload = data_payload["predefined_payload"]
 
     # Clear the test collection
     db_store.client[test_db_name][test_collection_name].delete_many({})
 
-    # Add a test document to the collection
-    test_payload = test_data["predefined_payload"]
     db_store.add_document(test_db_name, test_collection_name, test_payload)
 
     # Act
     result = db_store.find_documents_by_key(test_db_name, test_collection_name, "name", "TestProduct")
 
     # Assert
+    print(result)
     assert len(result) == 1
 
 
-def test_update_document_by_name(test_data):
-    db_store = test_data["db_store"]
-    test_db_name = test_data["test_db_name"]
-    test_collection_name = test_data["test_collection_name"]
-    predefined_payload = test_data["predefined_payload"]
+def test_update_document_by_name(data_payload):
+    db_store = data_payload["db_store"]
+    test_db_name = data_payload["test_db_name"]
+    test_collection_name = data_payload["test_collection_name"]
+    predefined_payload = data_payload["predefined_payload"]
+
+    # Clear the test collection
+    db_store.client[test_db_name][test_collection_name].delete_many({})
 
     # Add a document before testing update_document_by_name
     db_store.add_document(test_db_name, test_collection_name, predefined_payload)
@@ -106,11 +118,14 @@ def test_update_document_by_name(test_data):
     assert updated_document['discount'] == update_payload['discount']
 
 
-def test_delete_document_by_name(test_data):
-    db_store = test_data["db_store"]
-    test_db_name = test_data["test_db_name"]
-    test_collection_name = test_data["test_collection_name"]
-    predefined_payload = test_data["predefined_payload"]
+def test_delete_document_by_name(data_payload):
+    db_store = data_payload["db_store"]
+    test_db_name = data_payload["test_db_name"]
+    test_collection_name = data_payload["test_collection_name"]
+    predefined_payload = data_payload["predefined_payload"]
+
+    # Clear the test collection
+    db_store.client[test_db_name][test_collection_name].delete_many({})
 
     # Add a document before testing delete_document_by_name
     db_store.add_document(test_db_name, test_collection_name, predefined_payload)

@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from bson import ObjectId
 
 
 class DBStore:
@@ -25,11 +26,11 @@ class DBStore:
         test_oid = test_result.get("oid")
 
         # Retrieve the test document
-        test_document = self.find_document_by_key(db_name, collection_name, "_id")
+        test_document = self.find_document_by_key(db_name, collection_name, "_id", ObjectId(test_oid))
 
         # Delete the test document
         if test_oid:
-            self.delete_document_by_name(db_name, collection_name, "_id")
+            self.delete_document_by_name(db_name, collection_name, test_payload["name"])
 
         return test_document
 

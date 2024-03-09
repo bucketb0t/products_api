@@ -1,5 +1,6 @@
 import os
 import pytest
+
 from services.product_services import ProductService
 from model.product_model import ProductModel
 
@@ -20,16 +21,43 @@ def product_service():
 
 def test_add_product(product_service):
     # Test adding a product
+    # Clear the test collection
+    product_service.db_store.client["test_db"]["test_collection"].delete_many({})
+
     product_data = ProductModel(name="TestProduct", price=19.99, discount=5, category="TestCategory")
     result = product_service.add_product(product_data)
+    result_2 = product_service.get_product_by_name(product_data.name)
+    print(result)
+    print(result_2)
+
     assert result is not None
-    assert "oid" in result
+    assert str(result_2.get("_id")) == result.get("oid")
+    assert result_2.get("name") == product_data.name
+    assert result_2.get("price") == product_data.price
+    assert result_2.get("discount") == product_data.discount
+    assert result_2.get("category") == product_data.category
+    print(result)
 
 
 def test_get_all_products(product_service):
+    product_service.db_store.client["test_db"]["test_collection"].delete_many({})
     # Test getting all products
     result = product_service.get_all_products()
     assert isinstance(result, list)
+    assert len(result) == 0
+    products_data = [ProductModel(name="TestProduct1", price=19.99, discount=5, category="TestCategory1"),
+                     ProductModel(name="TestProduct2", price=10.4, discount=2, category="TestCategory2"),
+                     ProductModel(name="TestProduct3", price=5.3, discount=1, category="TestCategory3")]
+    i = 1
+    for product_data in products_data:
+        result = product_service.add_product(product_data)
+        result_2 = product_service.get_all_products()
+        print(result_2)
+        assert len(result_2) == i
+        i += 1
+        assert result_2[-1]["name"] == product_data.name
+
+    print(result)
 
 
 def test_update_product(product_service):
