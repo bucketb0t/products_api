@@ -35,7 +35,7 @@ async def update_product(name: str, product_data: ProductModel):
         "discount": product_data.discount,
         "category": product_data.category
     }
-    print(payload)
+
     return product_service.update_product(payload)
 
 

@@ -99,8 +99,9 @@ class DBStore:
             print(f"Document updated! {payload}")
             return updated_document
         else:
+            updated_document = collection.find_one(payload)
             print(f"Document failed to update! {payload}")
-            return None
+            return updated_document
 
     def delete_document_by_name(self, db_name, collection_name, name):
         """

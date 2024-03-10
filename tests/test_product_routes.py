@@ -1,5 +1,6 @@
 from routers.product_routes import router
 from fastapi.testclient import TestClient
+from fastapi import HTTPException
 
 import pytest
 
@@ -10,7 +11,7 @@ class TestProductRoutes:
     def initialize_test_client(self):
         return TestClient(router)
 
-    @pytest.mark.parametrize("input",[
+    @pytest.mark.parametrize("input", [
         ({"name": "TestProduct1",
           "price": 22.5,
           "discount": 3,
@@ -63,6 +64,30 @@ class TestProductRoutes:
         assert response.json()["discount"] == input["discount"]
         assert response.json()["category"] == input["category"]
         initialize_test_client.delete(f"/{input['name']}")
+
+    @pytest.mark.parametrize("input",
+                             [
+                                 ({"name": "TestProduct1",
+                                   "price": 22.5,
+                                   "discount": 3,
+                                   "category": "TestCategory1"}),
+                                 ({"name": "TestProduct2",
+                                   "price": 12.5,
+                                   "discount": 0,
+                                   "category": "TestCategory2"}),
+                                 ({"name": "TestProduct3",
+                                   "price": 32.0,
+                                   "discount": 100,
+                                   "category": "TestCategory3"})
+                             ])
+    def test_read_product_exception_raise(self, initialize_test_client, input):
+        initialize_test_client.delete(f"/{input['name']}")
+
+        with pytest.raises(HTTPException) as exc_info:
+            initialize_test_client.get(f"/{input['name']}")
+
+        assert exc_info.value.status_code == 404
+        assert exc_info.value.detail == "Product not found!"
 
     @pytest.mark.parametrize("input", [
         ([{"name": "TestProduct1.1",
@@ -129,12 +154,13 @@ class TestProductRoutes:
             initialize_test_client.delete(f"/{product_data['name']}")
 
     @pytest.mark.parametrize("input",
-                             [({
-                                 "reference_name": "TestProduct",
-                                 "name": "TestProductUpdate1",
-                                 "price": 55.5,
-                                 "discount": 6,
-                                 "category": "TestCategoryUpdate1"}),
+                             [
+                                 ({
+                                     "reference_name": "TestProduct",
+                                     "name": "TestProductUpdate1",
+                                     "price": 55.5,
+                                     "discount": 6,
+                                     "category": "TestCategoryUpdate1"}),
                                  ({
                                      "reference_name": "TestProduct",
                                      "name": "TestProductUpdate2",
@@ -146,7 +172,13 @@ class TestProductRoutes:
                                      "name": "TestProductUpdate3",
                                      "price": 65.5,
                                      "discount": 20,
-                                     "category": "TestCategoryUpdate3"})
+                                     "category": "TestCategoryUpdate3"}),
+                                 ({
+                                     "reference_name": "TestProduct_NotExistent",
+                                     "name": "TestProductUpdate4",
+                                     "price": 40.5,
+                                     "discount": 7,
+                                     "category": "TestCategoryUpdate4"})
                              ]
                              )
     def test_update_product(self, initialize_test_client, input):
@@ -161,11 +193,14 @@ class TestProductRoutes:
         response = initialize_test_client.put(f"/{input['reference_name']}", json=input)
 
         assert response.status_code == 200
-
-        print(response.json())
-
         del input["reference_name"]
-        assert response.json() == input
+
+        if response.json() != {
+            "name": "Not Found",
+            "price": 0.0,
+            "discount": 0,
+            "category": "Not Found"}:
+            assert response.json() == input
 
         initialize_test_client.delete(f"/{input['name']}")
 

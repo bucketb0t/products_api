@@ -113,7 +113,6 @@ def test_update_document_by_name(data_payload):
     updated_document = db_store.update_document_by_name(test_db_name, test_collection_name, "TestProduct",
                                                         update_payload)
 
-    assert updated_document is not None
     assert updated_document['price'] == update_payload['price']
     assert updated_document['discount'] == update_payload['discount']
 

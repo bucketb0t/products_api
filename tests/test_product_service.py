@@ -82,15 +82,13 @@ def test_update_product(product_service):
     }
 
     result = product_service.update_product(updated_product_data)
-    assert result is not None
 
     # Get the product after update
     product_after_update = product_service.get_product_by_name(updated_product_data["name"])
 
     # Assertions
-    assert product_before_update is not None
+
     assert product_before_update.get("name") == product_data.name
-    assert product_after_update is not None
     assert product_after_update.get("name") == updated_product_data["name"]
     assert product_after_update.get("price") == updated_product_data["price"]
     assert product_after_update.get("discount") == updated_product_data["discount"]

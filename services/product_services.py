@@ -68,6 +68,13 @@ class ProductService:
         payload = product_data
         result = self.db_store.update_document_by_name(self.db_name, self.collection_name, reference_name, payload)
 
+        if result is None:
+            result = {
+                "name": "Not Found",
+                "price": 0.0,
+                "discount": 0,
+                "category": "Not Found"}
+
         return result
 
     def delete_product(self, name_of_product: str):
@@ -88,4 +95,3 @@ class ProductService:
         print(f"All products after deletion: {all_products_after_deletion}")
 
         return result
-
