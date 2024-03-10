@@ -94,14 +94,14 @@ class DBStore:
         print(f"Querry: {name} // {payload}")
         result = collection.update_one({"name": name}, {"$set": payload})
 
+        updated_document = collection.find_one(payload)
+
         if result.modified_count == 1:
-            updated_document = collection.find_one(payload)
             print(f"Document updated! {payload}")
-            return updated_document
         else:
-            updated_document = collection.find_one(payload)
             print(f"Document failed to update! {payload}")
-            return updated_document
+
+        return updated_document
 
     def delete_document_by_name(self, db_name, collection_name, name):
         """
@@ -114,7 +114,7 @@ class DBStore:
         db = self.client[db_name]
         collection = db[collection_name]
         result = collection.delete_one({"name": name})
-        print(f"name:{name} /// result: {result}")
+
         if result.deleted_count > 0:
             print(f"Document deleted! {name}")
             return True

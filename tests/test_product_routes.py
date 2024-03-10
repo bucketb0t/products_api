@@ -1,9 +1,8 @@
-from routers.product_routes import router
+import pytest
 from fastapi.testclient import TestClient
 from fastapi import HTTPException
 
-import pytest
-
+from routers.product_routes import router
 
 class TestProductRoutes:
 
@@ -11,7 +10,7 @@ class TestProductRoutes:
     def initialize_test_client(self):
         return TestClient(router)
 
-    @pytest.mark.parametrize("input", [
+    @pytest.mark.parametrize("input_data", [
         ({"name": "TestProduct1",
           "price": 22.5,
           "discount": 3,
@@ -25,17 +24,17 @@ class TestProductRoutes:
           "discount": 100,
           "category": "TestCategory3"})
     ])
-    def test_create_product(self, initialize_test_client, input):
+    def test_create_product(self, initialize_test_client, input_data):
 
-        initialize_test_client.delete(f"/{input['name']}")
+        initialize_test_client.delete(f"/{input_data['name']}")
 
-        response = initialize_test_client.post("/", json=input)
+        response = initialize_test_client.post("/", json=input_data)
 
         assert response.status_code == 200
         assert "oid" in response.json().keys()
-        initialize_test_client.delete(f"/{input['name']}")
+        initialize_test_client.delete(f"/{input_data['name']}")
 
-    @pytest.mark.parametrize("input",
+    @pytest.mark.parametrize("input_data",
                              [
                                  ({"name": "TestProduct1",
                                    "price": 22.5,
@@ -50,22 +49,22 @@ class TestProductRoutes:
                                    "discount": 100,
                                    "category": "TestCategory3"})
                              ])
-    def test_read_product(self, initialize_test_client, input):
+    def test_read_product(self, initialize_test_client, input_data):
 
-        initialize_test_client.delete(f"/{input['name']}")
+        initialize_test_client.delete(f"/{input_data['name']}")
 
-        response = initialize_test_client.post("/", json=input)
+        response = initialize_test_client.post("/", json=input_data)
 
-        response = initialize_test_client.get(f"/{input['name']}")
+        response = initialize_test_client.get(f"/{input_data['name']}")
 
         assert response.status_code == 200
-        assert response.json()["name"] == input["name"]
-        assert response.json()["price"] == input["price"]
-        assert response.json()["discount"] == input["discount"]
-        assert response.json()["category"] == input["category"]
-        initialize_test_client.delete(f"/{input['name']}")
+        assert response.json()["name"] == input_data["name"]
+        assert response.json()["price"] == input_data["price"]
+        assert response.json()["discount"] == input_data["discount"]
+        assert response.json()["category"] == input_data["category"]
+        initialize_test_client.delete(f"/{input_data['name']}")
 
-    @pytest.mark.parametrize("input",
+    @pytest.mark.parametrize("input_data",
                              [
                                  ({"name": "TestProduct1",
                                    "price": 22.5,
@@ -80,16 +79,16 @@ class TestProductRoutes:
                                    "discount": 100,
                                    "category": "TestCategory3"})
                              ])
-    def test_read_product_exception_raise(self, initialize_test_client, input):
-        initialize_test_client.delete(f"/{input['name']}")
+    def test_read_product_exception_raise(self, initialize_test_client, input_data):
+        initialize_test_client.delete(f"/{input_data['name']}")
 
         with pytest.raises(HTTPException) as exc_info:
-            initialize_test_client.get(f"/{input['name']}")
+            initialize_test_client.get(f"/{input_data['name']}")
 
         assert exc_info.value.status_code == 404
         assert exc_info.value.detail == "Product not found!"
 
-    @pytest.mark.parametrize("input", [
+    @pytest.mark.parametrize("input_data", [
         ([{"name": "TestProduct1.1",
            "price": 12.5,
            "discount": 2,
@@ -120,25 +119,25 @@ class TestProductRoutes:
            "category": "TestCategory3.4"}
           ])
     ])
-    def test_read_products(self, initialize_test_client, input):
+    def test_read_products(self, initialize_test_client, input_data):
 
-        for product_data in input:
+        for product_data in input_data:
             initialize_test_client.delete(f"/{product_data['name']}")
 
-        for product_data in input:
+        for product_data in input_data:
             response = initialize_test_client.post("/", json=product_data)
 
         response = initialize_test_client.get("/")
 
         assert response.status_code == 200
         assert isinstance(response.json(), list)
-        assert len(response.json()) == len(input)
+        assert len(response.json()) == len(input_data)
 
-        for i in range(0, len(input)):
-            assert response.json()[i]["name"] == input[i]["name"]
-            assert response.json()[i]["price"] == input[i]["price"]
-            assert response.json()[i]["discount"] == input[i]["discount"]
-            assert response.json()[i]["category"] == input[i]["category"]
+        for i in enumerate(input_data):
+            assert response.json()[i]["name"] == input_data[i]["name"]
+            assert response.json()[i]["price"] == input_data[i]["price"]
+            assert response.json()[i]["discount"] == input_data[i]["discount"]
+            assert response.json()[i]["category"] == input_data[i]["category"]
 
         # assert response.json()[0]["name"] == products_data[0]["name"]
         # assert response.json()[0]["price"] == products_data[0]["price"]
@@ -150,10 +149,10 @@ class TestProductRoutes:
         # assert response.json()[1]["discount"] == products_data[1]["discount"]
         # assert response.json()[1]["category"] == products_data[1]["category"]
 
-        for product_data in input:
+        for product_data in input_data:
             initialize_test_client.delete(f"/{product_data['name']}")
 
-    @pytest.mark.parametrize("input",
+    @pytest.mark.parametrize("input_data",
                              [
                                  ({
                                      "reference_name": "TestProduct",
@@ -181,7 +180,7 @@ class TestProductRoutes:
                                      "category": "TestCategoryUpdate4"})
                              ]
                              )
-    def test_update_product(self, initialize_test_client, input):
+    def test_update_product(self, initialize_test_client, input_data):
         product_data = {"name": "TestProduct",
                         "price": 12.5,
                         "discount": 2,
@@ -190,21 +189,21 @@ class TestProductRoutes:
 
         response = initialize_test_client.post("/", json=product_data)
 
-        response = initialize_test_client.put(f"/{input['reference_name']}", json=input)
+        response = initialize_test_client.put(f"/{input_data['reference_name']}", json=input_data)
 
         assert response.status_code == 200
-        del input["reference_name"]
+        del input_data["reference_name"]
 
         if response.json() != {
             "name": "Not Found",
             "price": 0.0,
             "discount": 0,
             "category": "Not Found"}:
-            assert response.json() == input
+            assert response.json() == input_data
 
-        initialize_test_client.delete(f"/{input['name']}")
+        initialize_test_client.delete(f"/{input_data['name']}")
 
-    @pytest.mark.parametrize("input",
+    @pytest.mark.parametrize("input_data",
                              [({"name": "TestProduct1",
                                 "price": 24.5,
                                 "discount": 6,
@@ -217,13 +216,13 @@ class TestProductRoutes:
                                 "price": 43.5,
                                 "discount": 44,
                                 "category": "TestCategory"})])
-    def test_delete_product(self, initialize_test_client, input):
+    def test_delete_product(self, initialize_test_client, input_data):
 
-        initialize_test_client.delete(f"/{input['name']}")
+        initialize_test_client.delete(f"/{input_data['name']}")
 
-        response = initialize_test_client.post("/", json=input)
+        response = initialize_test_client.post("/", json=input_data)
 
-        response = initialize_test_client.delete(f"{input['name']}")
+        response = initialize_test_client.delete(f"{input_data['name']}")
 
         assert response.status_code == 200
         assert response.json() is True

@@ -18,10 +18,6 @@ def data_payload():
     }
     return data
 
-
-"""Nu reusesc sa ii dau de cap"""
-
-
 def test_initialize_database(data_payload):
 
     # Arrange

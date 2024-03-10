@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException
 from typing import List
+from fastapi import APIRouter, HTTPException
 
 from model.product_model import ProductModel
 from services.product_services import ProductService

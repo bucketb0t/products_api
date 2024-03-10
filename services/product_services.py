@@ -14,7 +14,7 @@ class ProductService:
             # Navigate to the parent directory and then to the config file
             config_path = os.path.join(current_dir, '..', 'config.json')
 
-        with open(config_path, 'r') as config_file:
+        with open(config_path, 'r',encoding="utf-8") as config_file:
             config_data = json.load(config_file)
 
         # Extract data_dir and port from the configuration

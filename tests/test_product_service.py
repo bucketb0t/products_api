@@ -81,7 +81,7 @@ def test_update_product(product_service):
         "category": "UpdatedTestCategory"
     }
 
-    result = product_service.update_product(updated_product_data)
+    product_service.update_product(updated_product_data)
 
     # Get the product after update
     product_after_update = product_service.get_product_by_name(updated_product_data["name"])
