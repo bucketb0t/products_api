@@ -62,36 +62,60 @@ def test_get_all_products(product_service):
 
 def test_update_product(product_service):
     # Test updating a product
-    product_data = {"reference_name": "OldName", "name": "NewName", "price": 1, "discount": 1, "category": "test"}
-    result_update = product_service.update_product(product_data)
-    assert result_update is not None or result_update is None
+    # Clear the test collection
+    product_service.db_store.client["test_db"]["test_collection"].delete_many({})
+
+    # Add a product for updating
+    product_data = ProductModel(name="TestProduct", price=19.99, discount=5, category="TestCategory")
+    product_service.add_product(product_data)
+
+    # Get the product before update
+    product_before_update = product_service.get_product_by_name(product_data.name)
+
+    # Update the product data
+    updated_product_data = {
+        "reference_name": product_data.name,
+        "name": "UpdatedTestProduct",
+        "price": 29.99,
+        "discount": 10,
+        "category": "UpdatedTestCategory"
+    }
+
+    result = product_service.update_product(updated_product_data)
+    assert result is not None
+
+    # Get the product after update
+    product_after_update = product_service.get_product_by_name(updated_product_data["name"])
+
+    # Assertions
+    assert product_before_update is not None
+    assert product_before_update.get("name") == product_data.name
+    assert product_after_update is not None
+    assert product_after_update.get("name") == updated_product_data["name"]
+    assert product_after_update.get("price") == updated_product_data["price"]
+    assert product_after_update.get("discount") == updated_product_data["discount"]
+    assert product_after_update.get("category") == updated_product_data["category"]
 
 
-"""Nu reusesc sa ii dau de cap"""
-# def test_delete_product(product_service):
-#     # Test deleting a product
-#     product_name = "TestProduct"
-#
-#     # Add a test product
-#     test_product_data = ProductModel(name=product_name, price=19.99, discount=5, category="TestCategory")
-#     add_result = product_service.add_product(test_product_data)
-#     assert add_result, f"Failed to add product: {product_name}"
-#
-#     # Check if the product exists before deletion
-#     existing_product = product_service.get_product_by_name(product_name)
-#     assert existing_product is not None
-#
-#     # Print the document before deletion
-#     print(f"Document before deletion: {existing_product}")
-#
-#     # Delete the test product
-#     result_delete = product_service.delete_product(product_name)
-#     assert result_delete, f"Failed to delete product: {product_name}"
-#
-#     # Check if the product still exists after deletion
-#     # Check if the product still exists after deletion
-#     remaining_products = product_service.get_all_products()
-#     product_names_after_deletion = [product['name'] for product in remaining_products]
-#     print(f"Product names after deletion: {product_names_after_deletion}")
-#     print(f"Checking if '{product_name}' is in the list: {product_name in product_names_after_deletion}")
-#     assert product_name not in product_names_after_deletion, f"Product '{product_name}' still exists after deletion"
+def test_delete_product(product_service):
+    # Test deleting a product
+    # Clear the test collection
+    product_service.db_store.client["test_db"]["test_collection"].delete_many({})
+
+    # Add a product for deletion
+    product_data = ProductModel(name="TestProduct", price=19.99, discount=5, category="TestCategory")
+    product_service.add_product(product_data)
+
+    # Get the product before deletion
+    product_before_deletion = product_service.get_product_by_name(product_data.name)
+
+    # Delete the product
+    result = product_service.delete_product(product_data.name)
+    assert result is True
+
+    # Get the product after deletion
+    product_after_deletion = product_service.get_product_by_name(product_data.name)
+
+    # Assertions
+    assert product_before_deletion is not None
+    assert product_after_deletion is None

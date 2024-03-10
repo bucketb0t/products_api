@@ -67,6 +67,7 @@ class ProductService:
         del product_data["reference_name"]
         payload = product_data
         result = self.db_store.update_document_by_name(self.db_name, self.collection_name, reference_name, payload)
+
         return result
 
     def delete_product(self, name_of_product: str):
