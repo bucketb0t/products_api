@@ -1,11 +1,15 @@
+import certifi
 from pymongo import MongoClient
 from bson import ObjectId
 
 
 class DBStore:
-    def __init__(self, connection_string):
+    def __init__(self, connection_string, certification = False):
         # Initialize a MongoDB client with the provided connection string
-        self.client = MongoClient(connection_string)
+        if certification:
+            self.client = MongoClient(connection_string, tlsCAFile=certifi.where())
+        else:
+            self.client = MongoClient(connection_string)
 
     def initialize_database(self, db_name, collection_name):
         """

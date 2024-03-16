@@ -14,16 +14,20 @@ class ProductService:
             # Navigate to the parent directory and then to the config file
             config_path = os.path.join(current_dir, '..', 'config.json')
 
-        with open(config_path, 'r',encoding="utf-8") as config_file:
+        with open(config_path, 'r', encoding="utf-8") as config_file:
             config_data = json.load(config_file)
 
         # Extract data_dir and port from the configuration
         config_data.get('data_dir')
         port = config_data.get('port')
+        connection_string = config_data.get("connection_string") # this key is added in config.json file and has value a URI similar to "mongodb+srv://<username>:<password>@catalintestingground.pb2f2c.mondodb.net"
 
         # Construct the MongoDB connection string
-        connection_string = f"mongodb://localhost:{port}/"
-        self.db_store = DBStore(connection_string)
+        if not connection_string:
+            connection_string = f"mongodb://localhost:{port}/"
+            self.db_store = DBStore(connection_string, False)
+        else:
+            self.db_store = DBStore(connection_string, True)
 
         # Set fixed database and collection names
         self.db_name = "products"

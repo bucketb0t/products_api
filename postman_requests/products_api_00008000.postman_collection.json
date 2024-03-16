@@ -1,0 +1,462 @@
+{
+	"info": {
+		"_postman_id": "d0eda0e3-0cab-42c3-bbd5-371968b70c39",
+		"name": "products_api_00008000",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33190356"
+	},
+	"item": [
+		{
+			"name": "add_product_1",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"PostMan Test\",\r\n    \"price\": 10.99,\r\n    \"discount\":5,\r\n    \"category\": \"Category Name\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://0.0.0.0:8000/products/"
+			},
+			"response": [
+				{
+					"name": "test_add_product",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"PostMan Test\",\r\n    \"price\": 10.99,\r\n    \"discount\":5,\r\n    \"category\": \"Category Name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/products/"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 12:41:07 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "34"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"oid\": \"65db3564932361719e532ca5\"\n}"
+				},
+				{
+					"name": "test_add_product2",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"PostMan Test2\",\r\n    \"price\": 20.99,\r\n    \"discount\":10,\r\n    \"category\": \"Category Name2\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/products/"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 13:02:52 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "34"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"oid\": \"65db3a7d751d3a3222ad778d\"\n}"
+				}
+			]
+		},
+		{
+			"name": "add_product_2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"PostMan Test2\",\r\n    \"price\": 20.99,\r\n    \"discount\":10,\r\n    \"category\": \"Category Name2\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://0.0.0.0:8000/products/"
+			},
+			"response": [
+				{
+					"name": "test_add_product",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"PostMan Test\",\r\n    \"price\": 10.99,\r\n    \"discount\":5,\r\n    \"category\": \"Category Name\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/products/"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 12:41:07 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "34"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"oid\": \"65db3564932361719e532ca5\"\n}"
+				},
+				{
+					"name": "test_add_product2",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"PostMan Test2\",\r\n    \"price\": 20.99,\r\n    \"discount\":10,\r\n    \"category\": \"Category Name2\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/products/"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 13:02:52 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "34"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"oid\": \"65db3a7d751d3a3222ad778d\"\n}"
+				}
+			]
+		},
+		{
+			"name": "get_product",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://0.0.0.0:8000/products/PostMan%20Test"
+			},
+			"response": [
+				{
+					"name": "test_get_product",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/products/PostMan%20Test"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 12:52:05 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "77"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"name\": \"PostMan Test\",\n    \"price\": 10.99,\n    \"discount\": 5,\n    \"category\": \"Category Name\"\n}"
+				}
+			]
+		},
+		{
+			"name": "get_all_products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://0.0.0.0:8000/products/"
+			},
+			"response": [
+				{
+					"name": "test_get_products",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/products/PostMan%20Test"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 12:52:05 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "77"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"name\": \"PostMan Test\",\n    \"price\": 10.99,\n    \"discount\": 5,\n    \"category\": \"Category Name\"\n}"
+				},
+				{
+					"name": "test_get_products2",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/products/"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 13:04:27 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "161"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "[\n    {\n        \"name\": \"PostMan Test\",\n        \"price\": 10.99,\n        \"discount\": 5,\n        \"category\": \"Category Name\"\n    },\n    {\n        \"name\": \"{PostMan Test2\",\n        \"price\": 20.99,\n        \"discount\": 10,\n        \"category\": \"Category Name2\"\n    }\n]"
+				}
+			]
+		},
+		{
+			"name": "update_product",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\":\"PostMan Test Update\",\r\n    \"price\": 50,\r\n    \"discount\":10,\r\n    \"category\": \"Category Name Update\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://0.0.0.0:8000/products/PostMan%20Test"
+			},
+			"response": [
+				{
+					"name": "test_update_product",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"PostMan Test Update\",\r\n    \"price\": 50,\r\n    \"discount\":10,\r\n    \"category\": \"Category Name Update\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/products/PostMan%20Test"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 13:50:41 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "91"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"name\": \"PostMan Test Update\",\n    \"price\": 50,\n    \"discount\": 10,\n    \"category\": \"Category Name Update\"\n}"
+				}
+			]
+		},
+		{
+			"name": "delete_product_1",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://0.0.0.0:8000/products/PostMan%20Test2"
+			},
+			"response": [
+				{
+					"name": "test_delete_product",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8000/products/PostMan%20Test2"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 14:03:46 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "4"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "true"
+				}
+			]
+		},
+		{
+			"name": "delete_product_2",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "http://0.0.0.0:8000/products/PostMan%20Test%20Update"
+			},
+			"response": [
+				{
+					"name": "test_delete_product",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8000/products/PostMan%20Test2"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "date",
+							"value": "Sun, 25 Feb 2024 14:03:46 GMT"
+						},
+						{
+							"key": "server",
+							"value": "uvicorn"
+						},
+						{
+							"key": "content-length",
+							"value": "4"
+						},
+						{
+							"key": "content-type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "true"
+				}
+			]
+		}
+	]
+}
